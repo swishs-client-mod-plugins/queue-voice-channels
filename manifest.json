@@ -1,0 +1,10 @@
+{
+  "name": "Queue Voice Channels",
+  "description": "A client mod plugin that adds the option to \"queue\" a voice channel if it's full.",
+  "version": "1.0.0",
+  "author": {
+    "name" : "Swishilicous#3200",
+    "id" : "474322346937810955"
+  },
+  "license": "MIT"
+}
