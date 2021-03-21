@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Plugin } from '@vizality/entities'
-import { patch, unpatch } from '@vizality/patcher'
+import { patch, unpatchAll } from '@vizality/patcher'
 import { getModule, FluxDispatcher } from '@vizality/webpack'
 import { findInReactTree } from '@vizality/util/react'
 import { ContextMenu } from '@vizality/components'
@@ -13,7 +13,7 @@ import queueChannel, { queue } from './apis/queueChannel'
 
 export default class QueueVoiceChannels extends Plugin {
   async start() {
-    FluxDispatcher.subscribe('VOICE_STATE_UPDATE', voiceState => queueChannel(voiceState))
+    FluxDispatcher.subscribe('VOICE_STATE_UPDATE', queueChannel)
     const VoiceChannelContextMenu = await getModule(m => m.default?.displayName === 'ChannelListVoiceChannelContextMenu')
     patch('queue-voice-channels', VoiceChannelContextMenu, 'default', (args, res) => {
       const UserCount = countVoiceStatesForChannel(args[0].channel.id)
@@ -32,8 +32,7 @@ export default class QueueVoiceChannels extends Plugin {
     })
   }
   stop() { 
-    unpatch('queue-voice-channels') 
-    FluxDispatcher.unsubscribe('VOICE_STATE_UPDATE', 
-      voiceState => queueChannel(voiceState))
+    FluxDispatcher.unsubscribe('VOICE_STATE_UPDATE', queueChannel)
+    unpatchAll('queue-voice-channels')
   }
 }
